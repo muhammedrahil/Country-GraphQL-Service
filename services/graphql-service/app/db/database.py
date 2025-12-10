@@ -25,6 +25,8 @@ SessionLocal = sessionmaker(
     class_=AsyncSession,
     autoflush=True,
     autocommit=False,
+
+    
     expire_on_commit=False,
 )
 
@@ -39,4 +41,4 @@ async def get_db():
     After the request, the session is closed to free up resources.
     """
     async with SessionLocal() as session:  # Use async session context manager
-        yield session  # Yield the async session to be used in a route or service
+            yield session  # Yield the async session to be used in a route or service
