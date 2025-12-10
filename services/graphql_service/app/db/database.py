@@ -38,5 +38,8 @@ async def get_db():
     Provides a database session, yielding it for use within a request context.
     After the request, the session is closed to free up resources.
     """
-    async with SessionLocal() as session:  # Use async session context manager
-        yield session  # Yield the async session to be used in a route or service
+    async with SessionLocal() as db:  # Use async session context manager
+        try:
+            yield db  # Yield the async session to be used in a route or service
+        finally:
+            db.close()
