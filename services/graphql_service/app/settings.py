@@ -3,7 +3,9 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
 
-    database_url: str = "sqlite:///./test.db"
+    database_url: str = (
+        "postgresql+asyncpg://postgres:Zaigo%4025@localhost:5433/country-graphql-service"
+    )
     cors_origins: list[str] = ["*"]
     app_name: str = "Country GraphQL Service"
 

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Float, Integer, String, JSON, Boolean
 
-from services.graphql_service.app.models.basemodel import BaseModel
+from app.models.basemodel import BaseModel
 
 
 class Country(BaseModel):
