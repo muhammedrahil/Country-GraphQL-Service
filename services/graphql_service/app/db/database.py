@@ -4,13 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from app.settings import settings
 
-
-# The URL to the database
-SQLALCHEMY_DATABASE_URL = settings.database_url
-
-# Create the SQLAlchemy async engine that connects to the database
 engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL,
+    settings.database_url,
     echo=False,
     pool_size=10,  # Number of connections to maintain in the pool
     max_overflow=5,  # Number of connections to allow in overflow
@@ -19,7 +14,6 @@ engine = create_async_engine(
     pool_pre_ping=True,  # Enable the connection pool "pre-ping" feature
 )
 
-# Create the session factory for creating async sessions
 SessionLocal = sessionmaker(
     bind=engine,
     class_=AsyncSession,
@@ -27,12 +21,9 @@ SessionLocal = sessionmaker(
     autocommit=False,
     expire_on_commit=False,
 )
-
-# Base class for your database models
 Base = declarative_base()
 
 
-# Dependency to get the current database session (async)
 async def get_db():
     """
     Provides a database session, yielding it for use within a request context.

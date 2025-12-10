@@ -5,6 +5,7 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./test.db"
     cors_origins: list[str] = ["*"]
+    app_name = "Country GraphQL Service"
 
     class Config:
         env_file = ".env"
