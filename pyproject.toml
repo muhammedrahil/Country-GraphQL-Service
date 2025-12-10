@@ -3,7 +3,7 @@ name = "country-graphql-service"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "muhammedzaigo",email = "muhammed@zaigoinfotech.com"}
+    {name = "muhammedrahil",email = "muhammedrahilmadathingal@gmail.com"}
 ]
 readme = "README.md"
 requires-python = "^3.10"
