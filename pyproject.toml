@@ -1,12 +1,13 @@
 [project]
-name = "country-graphql-service"
+name = "country_graphql_service"
 version = "0.1.0"
 description = ""
 authors = [
     {name = "muhammedrahil",email = "muhammedrahilmadathingal@gmail.com"}
 ]
 readme = "README.md"
-requires-python = "^3.10"
+requires-python = ">=3.10,<4.0"
+package-mode = false
 dependencies = [
     "fastapi (>=0.124.0,<0.125.0)",
     "uvicorn[standard] (>=0.38.0,<0.39.0)",
