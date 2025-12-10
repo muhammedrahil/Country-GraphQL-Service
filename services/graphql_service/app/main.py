@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.settings import settings
-from app.api.routes import api_router
 from fastapi.middleware.cors import CORSMiddleware
+from services.graphql_service.app.settings import settings
+from services.graphql_service.app.api.routes import api_router
 
 
 def create_app() -> FastAPI:
@@ -14,7 +14,7 @@ def create_app() -> FastAPI:
         description="GraphQL API for country data with geospatial queries",
         version="1.0.0",
     )
-    app.add_middleware(
+    fast_api_app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
@@ -22,7 +22,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     fast_api_app.include_router(api_router, prefix="")
-    # fast_api_app.add_middleware(ConnectionPoolMonitorMiddleware, engine=engine)
 
     return fast_api_app
 
