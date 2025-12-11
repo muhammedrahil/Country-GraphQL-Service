@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -28,7 +27,7 @@ class CountryIngestionService:
     def transform(self, raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Transform API response into SQLAlchemy model structure."""
         try:
-            name_obj = raw.get("name", {})
+            name = raw.get("name", "")
             latlng = raw.get("latlng", [])
             flags = raw.get("flags", {})
             currencies = raw.get("currencies", {})
@@ -36,11 +35,11 @@ class CountryIngestionService:
             borders = raw.get("borders", [])
 
             return {
-                "name": name_obj.get("common", "Unknown"),
-                "native_name": name_obj.get("official", None),
-                "alpha2_code": raw.get("cca2", None),
-                "alpha3_code": raw.get("cca3", None),
-                "capital": ", ".join(raw.get("capital", []) or []),
+                "name": name,
+                "calling_codes": raw.get("callingCodes", []),
+                "alpha2_code": raw.get("alpha2Code", None),
+                "alpha3_code": raw.get("alpha3Code", None),
+                "capital": raw.get("capital", ""),
                 "region": raw.get("region", None),
                 "subregion": raw.get("subregion", None),
                 "population": raw.get("population", 0),
@@ -96,7 +95,7 @@ class CountryIngestionService:
 
         except Exception as e:
             print(f"Bulk ingestion error: {e}")
-            db.rollback()
+            await db.rollback()
             stats["failed"] += 1
 
         return stats
@@ -117,19 +116,6 @@ class CountryIngestionService:
             stats = await self.ingest(db, raw_data)
             print(f"Ingestion Completed -> {stats}")
         finally:
-            db.close()
+            await db.close()
 
         return stats
-
-
-async def run_periodic_ingestion():
-    """Run ingestion every 24 hours."""
-    service = CountryIngestionService()
-
-    while True:
-        try:
-            await service.run_ingestion()
-        except Exception as e:
-            print(f"Periodic ingestion error: {e}")
-
-        await asyncio.sleep(86400)  # 24 hours

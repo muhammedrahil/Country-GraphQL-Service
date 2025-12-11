@@ -13,16 +13,16 @@ class Country(BaseModel):
     __tablename__ = "countries"
 
     name = Column(String(255), nullable=False, index=True)
-    native_name = Column(String(255))
     alpha2_code = Column(String(2), unique=True, index=True)
     alpha3_code = Column(String(3), unique=True, index=True)
     capital = Column(String(255))
     region = Column(String(100), index=True)
     subregion = Column(String(100))
-    population = Column(Integer)
+    population = Column(Integer, default=0)
     area = Column(Float)
     latitude = Column(Float, index=True)
     longitude = Column(Float, index=True)
+    calling_codes = Column(JSON)
     timezones = Column(JSON)
     borders = Column(JSON)
     currencies = Column(JSON)
