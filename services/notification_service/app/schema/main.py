@@ -1,0 +1,13 @@
+from pydantic import BaseModel
+
+
+class CountryNotification(BaseModel):
+    """Schema for country notification."""
+
+    name: str
+    official_name: str | None = None
+    alpha2_code: str
+    capital: str | None = None
+    region: str | None = None
+    population: int | None = None
+    created_at: str
