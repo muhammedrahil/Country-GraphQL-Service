@@ -1,0 +1,31 @@
+[project]
+name = "country_graphql_notification_service"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "muhammedrahil",email = "muhammedrahilmadathingal@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+package-mode = false
+dependencies = [
+    "fastapi (>=0.124.0,<0.125.0)",
+    "uvicorn[standard] (>=0.38.0,<0.39.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "black (>=25.12.0,<26.0.0)",
+    "ruff (>=0.14.8,<0.15.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "pre-commit (>=4.5.0,<5.0.0)"
+]

@@ -5,7 +5,6 @@ class CountryNotification(BaseModel):
     """Schema for country notification."""
 
     name: str
-    official_name: str | None = None
     alpha2_code: str
     capital: str | None = None
     region: str | None = None

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from services.notification_service.app.settings import settings
-from services.notification_service.app.api.routes import router
+from app.settings import settings
+from app.api.routes import router
 
 
 def create_app() -> FastAPI:
