@@ -119,3 +119,14 @@ class CountryIngestionService:
             await db.close()
 
         return stats
+
+
+async def run_periodic_ingestion() -> dict[str, Any]:
+    stats: Dict = {}
+    service = CountryIngestionService()
+    try:
+        stats = await service.run_ingestion()
+        print("Cron Ingestion Result:", stats)
+    except Exception as e:
+        print(f"Periodic ingestion error: {e}")
+    return {"stats": stats}

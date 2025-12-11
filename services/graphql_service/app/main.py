@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.graphql_service.app.settings import settings
 from services.graphql_service.app.api.routes import router
+from services.graphql_service.app.scheduler.scheduler import scheduler, start_scheduler
 
 
 def create_app() -> FastAPI:
@@ -22,6 +23,15 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     fast_api_app.include_router(router, prefix="")
+
+    @fast_api_app.on_event("startup")
+    async def on_startup():
+        await start_scheduler()
+
+    @fast_api_app.on_event("shutdown")
+    async def on_shutdown():
+        scheduler.shutdown()
+        print("🛑 Scheduler stopped!")
 
     return fast_api_app
 
