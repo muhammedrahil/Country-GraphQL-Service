@@ -208,3 +208,5 @@ __marimo__/
 
 services/graphql_service/alembic/versions/*
 !services/graphql_service/alembic/versions/__init__.py
+
+.vscode

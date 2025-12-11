@@ -1,9 +1,10 @@
 from fastapi import APIRouter
+from .controllers.countries.countries import router as countries_router
 
-api_router = APIRouter()
+router = APIRouter()
 
 
-@api_router.get("/")
+@router.get("/")
 async def root():
     """Root endpoint."""
     return {
@@ -13,7 +14,10 @@ async def root():
     }
 
 
-@api_router.get("/health")
+@router.get("/health")
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+router.include_router(countries_router, prefix="/v1/countires", tags=["countires"])

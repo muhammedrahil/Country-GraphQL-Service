@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Float, Integer, String, JSON, Boolean
 
-from app.models.basemodel import BaseModel
+from .basemodel import BaseModel
 
 
 class Country(BaseModel):

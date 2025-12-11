@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.graphql_service.app.settings import settings
-from services.graphql_service.app.api.routes import api_router
+from services.graphql_service.app.api.routes import router
 
 
 def create_app() -> FastAPI:
@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    fast_api_app.include_router(api_router, prefix="")
+    fast_api_app.include_router(router, prefix="")
 
     return fast_api_app
 

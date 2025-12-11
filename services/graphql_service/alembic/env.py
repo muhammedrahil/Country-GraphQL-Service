@@ -2,8 +2,8 @@ from sqlalchemy.ext.asyncio.engine import create_async_engine
 import asyncio
 from logging.config import fileConfig
 from alembic import context
-from app.db.database import Base
-from app.settings import settings
+from services.graphql_service.app.db.database import Base
+from services.graphql_service.app.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
