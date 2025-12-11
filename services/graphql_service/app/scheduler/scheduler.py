@@ -2,8 +2,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from zoneinfo import ZoneInfo
 from apscheduler.triggers.cron import CronTrigger
-from services.graphql_service.app.db.sync_database import sync_engine
-from services.graphql_service.ingestion_service.ingestion import run_periodic_ingestion
+from app.db.sync_database import sync_engine
+from ingestion_service.ingestion import run_periodic_ingestion
 
 jobstores = {
     "default": SQLAlchemyJobStore(

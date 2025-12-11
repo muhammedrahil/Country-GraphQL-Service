@@ -6,8 +6,8 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID
-from services.graphql_service.app.enumarates.utils import StatusEnum
-from services.graphql_service.app.db.database import Base
+from app.enumarates.utils import StatusEnum
+from app.db.database import Base
 
 
 class BaseModel(Base):

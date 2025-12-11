@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from services.graphql_service.app.settings import settings
+from app.settings import settings
 
 engine = create_async_engine(
     settings.database_url,

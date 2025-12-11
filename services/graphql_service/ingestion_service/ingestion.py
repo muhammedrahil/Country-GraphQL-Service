@@ -4,8 +4,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from services.graphql_service.app.models import Country
-from services.graphql_service.app.db.database import SessionLocal
+from app.models import Country
+from app.db.database import SessionLocal
 
 
 class CountryIngestionService:

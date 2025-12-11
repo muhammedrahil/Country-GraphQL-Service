@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from services.graphql_service.ingestion_service.ingestion import CountryIngestionService
+from ingestion_service.ingestion import CountryIngestionService
 
 router = APIRouter()
 

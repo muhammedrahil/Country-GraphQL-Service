@@ -4,4 +4,4 @@
 
 alembic -c services/graphql_service/alembic.ini revision --autogenerate -m "init"
 alembic -c services/graphql_service/alembic.ini upgrade head
-uvicorn services.graphql_service.app.main:app --reload
+uvicorn app.main:app --reload

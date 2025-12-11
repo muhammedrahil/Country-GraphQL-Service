@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from services.graphql_service.app.settings import settings
-from services.graphql_service.app.api.routes import router
-from services.graphql_service.app.scheduler.scheduler import scheduler, start_scheduler
+from app.settings import settings
+from app.api.routes import router
+from app.scheduler.scheduler import scheduler, start_scheduler
 
 
 def create_app() -> FastAPI:

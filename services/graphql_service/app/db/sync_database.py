@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from services.graphql_service.app.settings import settings
+from app.settings import settings
 
 db_url = settings.database_url
 if db_url is None:
