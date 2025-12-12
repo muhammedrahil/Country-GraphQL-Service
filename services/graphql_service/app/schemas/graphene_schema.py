@@ -1,8 +1,10 @@
+import asyncio
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from app.db.database import get_session
 from app.models import Country
 from app.graphene_schema_input.countries import AddCountryInput
+from app.notification.email_service import notify_email_service
 from app.services.countries import (
     add_country,
     countries_pagination_list,
@@ -73,7 +75,19 @@ class AddCountryMutation(graphene.Mutation):
                     success=False,
                     message=f"Country with code {input.alpha2_code} already exists",
                 )
-            await add_country(db=db, input=input)
+            country = await add_country(db=db, input=input)
+            asyncio.create_task(
+                notify_email_service(
+                    country_data={
+                        "name": country.name,
+                        "alpha2_code": country.alpha2_code,
+                        "capital": country.capital,
+                        "region": country.region,
+                        "population": country.population,
+                        "created_at": country.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                    }
+                )
+            )
             return AddCountryMutation(
                 success=True, message="Country added successfully"
             )

@@ -71,4 +71,5 @@ async def add_country(db: AsyncSession, input: AddCountryInput):
     )
     db.add(country)
     await db.commit()
+    await db.refresh(country)
     return country

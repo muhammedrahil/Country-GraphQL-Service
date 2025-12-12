@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from .controllers.notify.notify import router as notify_router
 
 router = APIRouter()
 
@@ -17,3 +18,6 @@ async def root():
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+router.include_router(notify_router, prefix="/v1/notify", tags=["notify"])

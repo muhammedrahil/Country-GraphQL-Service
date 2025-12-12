@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     database_url: Optional[str] = None
     cors_origins: list[str] = ["*"]
     app_name: str = "Country GraphQL Service"
+    notification_service: str = "http://localhost:8001"
 
     class Config:
         env_file = ".env"

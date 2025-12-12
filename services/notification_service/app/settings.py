@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     smtp_username: Optional[str] = None
     smtp_password: Optional[str] = None
     from_email: Optional[str] = None
-    admin_emails: Optional[str] = None
+    admin_email: Optional[str] = None
     cors_origins: list[str] = ["*"]
     app_name: str = "Country GraphQL Notification Service"
 

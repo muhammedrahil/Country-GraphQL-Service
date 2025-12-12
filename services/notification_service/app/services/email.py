@@ -14,7 +14,7 @@ class EmailNotificationService:
         self.smtp_username = settings.smtp_username
         self.smtp_password = settings.smtp_password
         self.from_email = settings.from_email
-        self.admin_emails = settings.admin_emails
+        self.admin_email = settings.admin_email
 
     def send_country_added_notification(self, country_data: dict):
         """Send email notification when a new country is added."""
@@ -37,8 +37,7 @@ class EmailNotificationService:
 
         """
 
-        for admin_email in self.admin_emails:
-            self._send_email(admin_email, subject, html_body)
+        self._send_email(self.admin_email, subject, html_body)
 
     def _send_email(self, to_email: str, subject: str, html_body: str):
         """Send an email."""
