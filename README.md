@@ -16,7 +16,7 @@ The project is organized into two independent services:
 ### 1. **GraphQL Service** 
 A GraphQL API that provides access to country data including population, area, languages, and geospatial information. It supports querying, mutations, and automatic data ingestion from external sources.
 
-📖 **[Read GraphQL Service Documentation →](./graphql_service/README.md)**
+📖 **[Read GraphQL Service Documentation →](./services/graphql_service/README.md)**
 
 **Key Features:**
 - GraphQL API with interactive playground
@@ -29,7 +29,7 @@ A GraphQL API that provides access to country data including population, area, l
 ### 2. **Notification Service**
 A dedicated service for handling email notifications and alerts. This service is triggered when certain events occur in the GraphQL service (e.g., new country creation).
 
-📖 **[Read Notification Service Documentation →](./notification_service/README.md)**
+📖 **[Read Notification Service Documentation →](./services/notification_service/README.md)**
 
 **Key Features:**
 - Email notification handling
@@ -80,8 +80,8 @@ For detailed setup, configuration, and usage instructions, please refer to the i
 
 | Service | Documentation |
 |---------|--------------|
-| GraphQL Service | [📖 View README](./graphql_service/README.md) |
-| Notification Service | [📖 View README](./notification_service/README.md) |
+| GraphQL Service | [📖 View README](./services/graphql_service/README.md) |
+| Notification Service | [📖 View README](./services/notification_service/README.md) |
 
 ## 🛠️ Technology Stack
 
