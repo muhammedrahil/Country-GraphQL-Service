@@ -39,23 +39,42 @@ class GetCountryQuery(graphene.ObjectType):
 
     async def resolve_get_country(self, info, country_code: str) -> CountryType | None:
         """Get a single country by code."""
-        async with get_session() as db:
+        # Use session from context if available (for testing), otherwise create new session
+        if hasattr(info.context, "get") and "session" in info.context:
+            db = info.context["session"]
             return await get_country(db=db, country_code=country_code)
+        else:
+            async with get_session() as db:
+                return await get_country(db=db, country_code=country_code)
 
     async def resolve_countries_list(self, info, **kwargs) -> list[CountryType]:
         """List all countries."""
         limit = kwargs.get("limit", 0)
         offset = kwargs.get("offset", 0)
-        async with get_session() as db:
+        # Use session from context if available (for testing), otherwise create new session
+        if hasattr(info.context, "get") and "session" in info.context:
+            db = info.context["session"]
             return await countries_pagination_list(db=db, limit=limit, offset=offset)
+        else:
+            async with get_session() as db:
+                return await countries_pagination_list(
+                    db=db, limit=limit, offset=offset
+                )
 
     async def resolve_nearby_countries(
         self, info, latitude: float, longitude: float, radius_km: float = 500
     ):
-        async with get_session() as db:
+        # Use session from context if available (for testing), otherwise create new session
+        if hasattr(info.context, "get") and "session" in info.context:
+            db = info.context["session"]
             return await nearby_countries(
                 db=db, latitude=latitude, longitude=longitude, radius_km=radius_km
             )
+        else:
+            async with get_session() as db:
+                return await nearby_countries(
+                    db=db, latitude=latitude, longitude=longitude, radius_km=radius_km
+                )
 
 
 class AddCountryMutation(graphene.Mutation):
@@ -68,7 +87,9 @@ class AddCountryMutation(graphene.Mutation):
         input = AddCountryInput(required=True)
 
     async def mutate(self, info, input: AddCountryInput):
-        async with get_session() as db:
+        # Use session from context if available (for testing), otherwise create new session
+        if hasattr(info.context, "get") and "session" in info.context:
+            db = info.context["session"]
             existing = await check_country_exists(db=db, alpha2_code=input.alpha2_code)
             if existing:
                 return AddCountryMutation(
@@ -91,6 +112,34 @@ class AddCountryMutation(graphene.Mutation):
             return AddCountryMutation(
                 success=True, message="Country added successfully"
             )
+        else:
+            async with get_session() as db:
+                existing = await check_country_exists(
+                    db=db, alpha2_code=input.alpha2_code
+                )
+                if existing:
+                    return AddCountryMutation(
+                        success=False,
+                        message=f"Country with code {input.alpha2_code} already exists",
+                    )
+                country = await add_country(db=db, input=input)
+                asyncio.create_task(
+                    notify_email_service(
+                        country_data={
+                            "name": country.name,
+                            "alpha2_code": country.alpha2_code,
+                            "capital": country.capital,
+                            "region": country.region,
+                            "population": country.population,
+                            "created_at": country.created_at.strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                        }
+                    )
+                )
+                return AddCountryMutation(
+                    success=True, message="Country added successfully"
+                )
 
 
 class Mutation(graphene.ObjectType):
