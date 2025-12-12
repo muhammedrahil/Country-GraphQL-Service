@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from contextlib import asynccontextmanager
+
 from app.settings import settings
 
 engine = create_async_engine(
@@ -32,4 +34,13 @@ async def get_db():
         try:
             yield db  # Yield the async session to be used in a route or service
         finally:
-            db.close()
+            await db.close()
+
+
+@asynccontextmanager
+async def get_session():
+    async with SessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
