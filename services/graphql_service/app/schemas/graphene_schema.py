@@ -2,20 +2,22 @@ import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from app.db.database import get_session
 from app.models import Country
-from app.resolvers.countries import (
+from app.graphene_schema_input.countries import AddCountryInput
+from app.services.countries import (
+    add_country,
     countries_pagination_list,
     get_country,
     nearby_countries,
 )
+from app.validation.countries import check_country_exists
 
 
 class CountryType(SQLAlchemyObjectType):
     class Meta:
         model = Country
-        # only_fields = ('id', 'alpha2_code', 'name')
 
 
-class Query(graphene.ObjectType):
+class GetCountryQuery(graphene.ObjectType):
     countries_list = graphene.List(
         CountryType,
         limit=graphene.Int(default_value=10),
@@ -54,4 +56,31 @@ class Query(graphene.ObjectType):
             )
 
 
-graphene_schema = graphene.Schema(query=Query)
+class AddCountryMutation(graphene.Mutation):
+    """Mutation to add a new country."""
+
+    success = graphene.Boolean()
+    message = graphene.String()
+
+    class Arguments:
+        input = AddCountryInput(required=True)
+
+    async def mutate(self, info, input: AddCountryInput):
+        async with get_session() as db:
+            existing = await check_country_exists(db=db, alpha2_code=input.alpha2_code)
+            if existing:
+                return AddCountryMutation(
+                    success=False,
+                    message=f"Country with code {input.alpha2_code} already exists",
+                )
+            await add_country(db=db, input=input)
+            return AddCountryMutation(
+                success=True, message="Country added successfully"
+            )
+
+
+class Mutation(graphene.ObjectType):
+    add_country = AddCountryMutation.Field()
+
+
+graphene_schema = graphene.Schema(query=GetCountryQuery, mutation=Mutation)

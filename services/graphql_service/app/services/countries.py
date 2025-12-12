@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models import Country
 from geopy.distance import distance
+from app.graphene_schema_input.countries import AddCountryInput
 
 
 async def get_country(db: AsyncSession, country_code: str) -> Country:
@@ -46,3 +47,28 @@ async def nearby_countries(
             nearby.append(c)
 
     return nearby
+
+
+async def add_country(db: AsyncSession, input: AddCountryInput):
+    country = Country(
+        name=input.name,
+        alpha2_code=input.alpha2_code,
+        alpha3_code=input.alpha3_code,
+        capital=input.capital,
+        region=input.region,
+        subregion=input.subregion,
+        population=input.population,
+        area=input.area,
+        latitude=input.latitude,
+        longitude=input.longitude,
+        calling_codes=input.calling_codes,
+        timezones=input.timezones,
+        currencies=input.currencies,
+        languages=input.languages,
+        flag_svg=input.flag_svg,
+        flag_png=input.flag_png,
+        independent=input.independent,
+    )
+    db.add(country)
+    await db.commit()
+    return country
