@@ -2,6 +2,6 @@
  build a production-ready GraphQL service. Let me create a comprehensive solution with two services.
 
 
-alembic -c services/graphql_service/alembic.ini revision --autogenerate -m "init"
-alembic -c services/graphql_service/alembic.ini upgrade head
+alembic revision --autogenerate -m "init"
+alembic upgrade head
 uvicorn app.main:app --reload

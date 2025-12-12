@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette_graphene3 import GraphQLApp, make_graphiql_handler
-from app.schemas import graphene_schema
+from starlette_graphene3 import GraphQLApp
+from app.custom_graphiql_handler import custom_graphiql_handler
+from app.db.database import SessionLocal
+from app.schemas.graphene_schema import graphene_schema
 from app.settings import settings
 from app.api.routes import router
 from app.scheduler.scheduler import scheduler, start_scheduler
@@ -23,10 +25,24 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
     )
     fast_api_app.include_router(router, prefix="")
-    fast_api_app.add_route(
-        "/graphql", GraphQLApp(schema=graphene_schema, on_get=make_graphiql_handler())
+
+    async def create_session():
+        return SessionLocal()
+
+    async def graphql_context(request):
+        db = await create_session()
+        return {"request": request, "db": db}
+
+    fast_api_app.mount(
+        "/graphql",
+        GraphQLApp(
+            schema=graphene_schema,
+            on_get=custom_graphiql_handler(),
+            context_value=graphql_context,
+        ),
     )
 
     @fast_api_app.on_event("startup")

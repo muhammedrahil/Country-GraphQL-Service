@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from .controllers.countries.countries import router as countries_router
-from app.graphiql import graphiql_html
 
 router = APIRouter()
 
@@ -19,11 +18,6 @@ async def root():
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
-
-
-@router.get("/graphiql")
-async def graphiql_ui():
-    return graphiql_html()
 
 
 router.include_router(countries_router, prefix="/v1/countires", tags=["countires"])
