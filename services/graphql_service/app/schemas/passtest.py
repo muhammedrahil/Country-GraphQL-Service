@@ -1,7 +1,7 @@
 import graphene
 
 data = [
-    {"name": "Hello", "email": "fcdd"},
+    {"name": "Personl", "email": "fcdd"},
     {"name": "Hello", "email": "fcdd"},
     {"name": "Hello", "email": "fcdd"},
     {"name": "Hello", "email": "fcdd"},

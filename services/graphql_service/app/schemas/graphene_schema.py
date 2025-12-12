@@ -1,9 +1,12 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from sqlalchemy import select
-from geopy.distance import distance
 from app.db.database import get_session
 from app.models import Country
+from app.resolvers.countries import (
+    countries_pagination_list,
+    get_country,
+    nearby_countries,
+)
 
 
 class CountryType(SQLAlchemyObjectType):
@@ -33,47 +36,22 @@ class Query(graphene.ObjectType):
     async def resolve_get_country(self, info, country_code: str) -> CountryType | None:
         """Get a single country by code."""
         async with get_session() as db:
-            try:
-                # Use async query execution with proper result handling
-                stmt = select(Country).where(Country.alpha2_code == country_code)
-                result = await db.execute(stmt)
-                return result.scalar_one_or_none()
-            except Exception as e:
-                print(f"Error resolving country: {e}")
-                return None
+            return await get_country(db=db, country_code=country_code)
 
     async def resolve_countries_list(self, info, **kwargs) -> list[CountryType]:
         """List all countries."""
         limit = kwargs.get("limit", 0)
         offset = kwargs.get("offset", 0)
         async with get_session() as db:
-            try:
-                stmt = select(Country).limit(limit).offset(offset)
-                result = await db.execute(stmt)
-                return result.scalars().all()
-            except Exception as e:
-                print(f"Error resolving countries_list: {e}")
-                return []
+            return await countries_pagination_list(db=db, limit=limit, offset=offset)
 
-    async def resolve_nearby_countries(self, info, latitude, longitude, radius_km):
-        # Fetch all countries
-        nearby = []
+    async def resolve_nearby_countries(
+        self, info, latitude: float, longitude: float, radius_km: float = 500
+    ):
         async with get_session() as db:
-            result = await db.execute(select(Country))
-            countries = result.scalars().all()
-
-            for c in countries:
-                # Skip invalid coordinates
-                if c.latitude is None or c.longitude is None:
-                    continue
-
-                # geopy distance
-                dist_km = distance((latitude, longitude), (c.latitude, c.longitude)).km
-
-                if dist_km <= radius_km:
-                    nearby.append(c)
-
-            return nearby
+            return await nearby_countries(
+                db=db, latitude=latitude, longitude=longitude, radius_km=radius_km
+            )
 
 
 graphene_schema = graphene.Schema(query=Query)
