@@ -26,7 +26,8 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: pytest
+        entry: bash -c 'cd services/graphql_service && ./.venv/bin/pytest tests'
         language: system
+        types: [python]
         pass_filenames: false
-        stages: [pre-push]
+        always_run: true
