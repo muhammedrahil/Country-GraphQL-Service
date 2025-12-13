@@ -47,10 +47,10 @@ class GetCountryQuery(graphene.ObjectType):
             async with get_session() as db:
                 return await get_country(db=db, country_code=country_code)
 
-    async def resolve_countries_list(self, info, **kwargs) -> list[CountryType]:
+    async def resolve_countries_list(
+        self, info, limit: int = 0, offset: int = 0
+    ) -> list[CountryType]:
         """List all countries."""
-        limit = kwargs.get("limit", 0)
-        offset = kwargs.get("offset", 0)
         # Use session from context if available (for testing), otherwise create new session
         if hasattr(info.context, "get") and "session" in info.context:
             db = info.context["session"]

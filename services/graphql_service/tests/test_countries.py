@@ -11,6 +11,7 @@ async def gql(query: str, db_session, variables=None):
 
 
 @pytest.mark.asyncio
+# @mock.patch("app.schemas.graphene_schema.notify_email_service")
 async def test_add_country(db_session, monkeypatch):
     monkeypatch.setattr(
         "app.notification.email_service.notify_email_service",
@@ -117,4 +118,4 @@ async def test_nearby_countries(db_session):
     names = [c["name"] for c in result.data["nearbyCountries"]]
 
     assert "India" in names
-    assert "UAE" not in names  # Too far
+    assert "UAE" not in names

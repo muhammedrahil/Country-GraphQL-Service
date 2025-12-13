@@ -2,22 +2,26 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import httpx
+import os
+from dotenv import load_dotenv
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Country
 from app.db.database import SessionLocal
 
+load_dotenv()
+
 
 class CountryIngestionService:
     """Service to fetch and store/ update country information."""
 
-    API_URL = "https://www.apicountries.com/countries"
+    COUNTRIES_API_URL = os.getenv("ingestion_api_url")
 
     async def fetch_countries(self) -> List[Dict[str, Any]]:
         """Fetch country data from the external API."""
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.get(self.API_URL)
+                response = await client.get(self.COUNTRIES_API_URL)
                 response.raise_for_status()
                 return response.json()
         except Exception as e:

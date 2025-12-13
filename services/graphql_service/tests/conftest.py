@@ -3,15 +3,16 @@ import sys
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT_DIR)
 
 from app.db.database import Base  # noqa: E402
 
-TEST_DB_URL = (
-    "postgresql+asyncpg://postgres:Zaigo%4025@localhost:5432/country-graphql-service"
-)
+load_dotenv()
+
+TEST_DB_URL = os.getenv("database_url")
 
 
 @pytest_asyncio.fixture
