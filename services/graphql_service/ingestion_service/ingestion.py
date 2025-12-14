@@ -2,20 +2,17 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import httpx
-import os
-from dotenv import load_dotenv
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Country
 from app.db.database import SessionLocal
-
-load_dotenv()
+from app.settings import settings
 
 
 class CountryIngestionService:
     """Service to fetch and store/ update country information."""
 
-    COUNTRIES_API_URL = os.getenv("ingestion_api_url")
+    COUNTRIES_API_URL = settings.ingestion_api_url
 
     async def fetch_countries(self) -> List[Dict[str, Any]]:
         """Fetch country data from the external API."""
