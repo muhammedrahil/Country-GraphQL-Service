@@ -85,7 +85,7 @@ async def test_countries_list(db_session):
 
     query = """
         query {
-            countriesCurserList {
+            countriesList {
                 edges {
                     node {
                         name
@@ -98,7 +98,7 @@ async def test_countries_list(db_session):
     result = await gql(query, db_session)
 
     assert result.errors is None
-    assert len(result.data["countriesCurserList"]) == 1
+    assert len(result.data["countriesList"]) == 1
 
 
 @pytest.mark.asyncio

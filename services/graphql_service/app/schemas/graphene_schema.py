@@ -8,7 +8,6 @@ from app.notification.email_service import notify_email_service
 from app.services.countries import (
     add_country,
     countries_curser_pagination_list,
-    countries_offset_pagination_list,
     get_country,
     nearby_countries,
 )
@@ -34,13 +33,8 @@ class CountryConnection(graphene.relay.Connection):
 
 
 class GetCountryQuery(graphene.ObjectType):
-    countries_offset_list = graphene.List(
-        CountryType,
-        limit=graphene.Int(default_value=10),
-        offset=graphene.Int(default_value=0),
-    )
 
-    countries_curser_list = graphene.relay.ConnectionField(CountryConnection)
+    countries_list = graphene.relay.ConnectionField(CountryConnection)
 
     get_country = graphene.Field(
         CountryType, country_code=graphene.String(required=True)
@@ -63,23 +57,7 @@ class GetCountryQuery(graphene.ObjectType):
             async with get_session() as db:
                 return await get_country(db=db, country_code=country_code)
 
-    async def resolve_countries_offset_list(
-        self, info, limit: int = 0, offset: int = 0
-    ) -> list[CountryType]:
-        """List all countries."""
-        # Use session from context if available (for testing), otherwise create new session
-        if hasattr(info.context, "get") and "session" in info.context:
-            db = info.context["session"]
-            return await countries_offset_pagination_list(
-                db=db, limit=limit, offset=offset
-            )
-        else:
-            async with get_session() as db:
-                return await countries_offset_pagination_list(
-                    db=db, limit=limit, offset=offset
-                )
-
-    async def resolve_countries_curser_list(self, info, **kwargs) -> list[CountryType]:
+    async def resolve_countries_list(self, info, **kwargs) -> list[CountryType]:
         """List all countries."""
         # Use session from context if available (for testing), otherwise create new session
         if hasattr(info.context, "get") and "session" in info.context:
