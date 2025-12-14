@@ -76,12 +76,23 @@ Here are some example queries you can run in the playground:
 **1. Get a list of countries (with pagination):**
 ```graphql
 query {
-  countriesList(limit: 5, offset: 0) {
-    name
-    alpha2Code
-    capital
-    population
-    region
+  countriesList(limit: 5, after: "") {
+    edges {
+        node {
+            name
+            alpha2Code
+            capital
+            population
+            region
+        }
+    }
+    pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+    }
+    totalCount
   }
 }
 ```
