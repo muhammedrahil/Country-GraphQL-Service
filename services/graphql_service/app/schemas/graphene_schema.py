@@ -7,7 +7,8 @@ from app.graphene_schema_input.countries import AddCountryInput
 from app.notification.email_service import notify_email_service
 from app.services.countries import (
     add_country,
-    countries_pagination_list,
+    countries_curser_pagination_list,
+    countries_offset_pagination_list,
     get_country,
     nearby_countries,
 )
@@ -17,14 +18,29 @@ from app.validation.countries import check_country_exists
 class CountryType(SQLAlchemyObjectType):
     class Meta:
         model = Country
+        interfaces = (graphene.relay.Node,)
+
+
+class CountryConnection(graphene.relay.Connection):
+    """Pagination for countries."""
+
+    class Meta:
+        node = CountryType
+
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, info):
+        return len(self.iterable) if hasattr(self, "iterable") else 0
 
 
 class GetCountryQuery(graphene.ObjectType):
-    countries_list = graphene.List(
+    countries_offset_list = graphene.List(
         CountryType,
         limit=graphene.Int(default_value=10),
         offset=graphene.Int(default_value=0),
     )
+
+    countries_curser_list = graphene.relay.ConnectionField(CountryConnection)
 
     get_country = graphene.Field(
         CountryType, country_code=graphene.String(required=True)
@@ -47,19 +63,31 @@ class GetCountryQuery(graphene.ObjectType):
             async with get_session() as db:
                 return await get_country(db=db, country_code=country_code)
 
-    async def resolve_countries_list(
+    async def resolve_countries_offset_list(
         self, info, limit: int = 0, offset: int = 0
     ) -> list[CountryType]:
         """List all countries."""
         # Use session from context if available (for testing), otherwise create new session
         if hasattr(info.context, "get") and "session" in info.context:
             db = info.context["session"]
-            return await countries_pagination_list(db=db, limit=limit, offset=offset)
+            return await countries_offset_pagination_list(
+                db=db, limit=limit, offset=offset
+            )
         else:
             async with get_session() as db:
-                return await countries_pagination_list(
+                return await countries_offset_pagination_list(
                     db=db, limit=limit, offset=offset
                 )
+
+    async def resolve_countries_curser_list(self, info, **kwargs) -> list[CountryType]:
+        """List all countries."""
+        # Use session from context if available (for testing), otherwise create new session
+        if hasattr(info.context, "get") and "session" in info.context:
+            db = info.context["session"]
+            return await countries_curser_pagination_list(db=db)
+        else:
+            async with get_session() as db:
+                return await countries_curser_pagination_list(db=db)
 
     async def resolve_nearby_countries(
         self, info, latitude: float, longitude: float, radius_km: float = 500
@@ -146,4 +174,7 @@ class Mutation(graphene.ObjectType):
     add_country = AddCountryMutation.Field()
 
 
-graphene_schema = graphene.Schema(query=GetCountryQuery, mutation=Mutation)
+graphene_schema = graphene.Schema(
+    query=GetCountryQuery,
+    mutation=Mutation,
+)

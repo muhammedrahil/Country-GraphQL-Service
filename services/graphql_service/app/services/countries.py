@@ -16,12 +16,23 @@ async def get_country(db: AsyncSession, country_code: str) -> Country:
         return None
 
 
-async def countries_pagination_list(
+async def countries_offset_pagination_list(
     db: AsyncSession, limit: int = 0, offset: int = 0
 ) -> list[Country]:
     """List all countries."""
     try:
         stmt = select(Country).limit(limit).offset(offset)
+        result = await db.execute(stmt)
+        return result.scalars().all()
+    except Exception as e:
+        print(f"Error resolving countries_list: {e}")
+        return []
+
+
+async def countries_curser_pagination_list(db: AsyncSession) -> list[Country]:
+    """List all countries."""
+    try:
+        stmt = select(Country)
         result = await db.execute(stmt)
         return result.scalars().all()
     except Exception as e:
